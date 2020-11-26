@@ -11,10 +11,10 @@ class Questions
         //db obkect
         $Dbobj = new DbConnection();
         $conn = $Dbobj->getdbconnect();
-        $sql = 'SELECT answers.questions_id, answers.id as answers_id, 
-                        count(records.id) as amount, 
+        $sql = 'SELECT answers.questions_id, answers.id as answers_id,
+                        count(records.id) as amount,
                         sum(records.final) as positive
-                FROM answers 
+                FROM answers
                 left join records_answers on records_answers.answers_id = answers.id
                 left join records on records.id = records_answers.records_id
                 group by answers.id;';
@@ -46,7 +46,7 @@ class Questions
                 $highestId = $highestId > $gain ? $highestId : $currentQuestions['questions_id'];
                 unset($currentQuestions['answers']);
                 $currentQuestions = [];
-                var_dump('<br>'.$gain.'<br>');
+                //var_dump('<br>'.$gain.'<br>');
             }
 
             if (empty($currentQuestions)) {
@@ -82,6 +82,7 @@ class Questions
         if($sum == $p) {
             return 0;
         }
+
         return floatval(( (-$p/$sum ) * log(($p/$sum),2) ) - ( (($sum - $p)/$sum) * log(($sum - $p)/$sum,2) ));
     }
 
@@ -92,7 +93,7 @@ class Questions
 
 
     public function nextQuestion($currentAnswer){
-        $cookies = $_COOKIE[self::ANSWERS_COOKIE_NAME] ?? [];
+        $cookies = $_COOKIE[self::ANSWERS_COOKIE_NAME] ?? [] ;
 
         $cookies[] = $currentAnswer;
         $this->saveCookie(self::ANSWERS_COOKIE_NAME, $cookies);
