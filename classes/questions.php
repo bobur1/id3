@@ -223,17 +223,18 @@ class Questions
 
         $sql = 'SELECT count(id) as amount from records';
         $amountOfRecordsRow = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
-//                var_dump('<pre>');
+//        var_dump('<pre>');
 //        var_dump($amountOfRecordsRow[0]['amount']);
 //        var_dump('</pre>');
 //        die();
-        return $amountOfRecordsRow[0]['amount'] < 13;
+        return $amountOfRecordsRow[0]['amount'] < 18;
     }
 
     public function ordinaryQuestionsFlow (){
         $Dbobj = new DbConnection();
         $conn = $Dbobj->getdbconnect();
         if(isset($_POST['final_answer'])) {
+            var_dump('saving');
             $this->save();
         }
         $question_id = $_POST['question_id'] ?? 0;
@@ -272,17 +273,22 @@ class Questions
         if (!empty($final_answer) && !empty($visited_questions_answers)) {
             $Dbobj = new DbConnection();
             $conn = $Dbobj->getdbconnect();
-            $sql = "INSERT INTO records (final) VALUES ('" . intval($final_answer) . "')";
+            $final_answer = $final_answer ? 1 : 0;
+            $sql = "INSERT INTO records (final) VALUES (" . $final_answer . ")";
             //check if there any errors in inputting first table (products)
-            var_dump('new record answer '.$final_answer);
+            var_dump('new record answer --->'. $sql);
             if (mysqli_query($conn, $sql) == TRUE) {
-                var_dump('new record');
+                var_dump('<----new record');
                 $record_id = mysqli_insert_id($conn);
 
-                $sql2 = "INSERT INTO attributes (records_id, answers_id) VALUES ";
+
                 foreach ($visited_questions_answers as $answer_id) {
+                    $sql2 = "INSERT INTO records_answers (records_id, answers_id) VALUES ";
                     $sql2.= '('.$record_id .','. $answer_id.')';
+                    mysqli_query($conn, $sql2);
                 }
+                var_dump($sql2);
+
             }
 
             var_dump('or no record');
