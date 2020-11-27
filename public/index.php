@@ -8,6 +8,7 @@ include_once '../classes/questions.php';
 //add header
 include('shared/_header.php');
 $questionsObj = new Questions();
+
 if (isset($_POST["new"])) {
     unset($_POST['answer']);
     unset($_POST['new']);
@@ -71,10 +72,11 @@ if (!$questionsObj->needToInsertData()) {
             <input type="radio" id="entertainment-<?= $question['answers_id'];?>" name="answer[<?=$question['id'];?>]" value="<?=$question['answers_id'];?>">
             <label for="entertainment-<?= $question['answers_id'];?>"><?=$question['answer'];?></label><br><br>
             <?php } ?>
-
-                  <input type="radio" name="answer[0]" value="other">
+                <?php if($questionsObj->needToInsertData()) { ?>
+                  <input type="radio" name="answer[<?=$question['id'];?>]" value="0">
                   <label for="other">Other</label><br><br>
                   <input style="display:none;" type="text" name="otherAnswer" id="otherAnswer"/>
+                  <?php } ?>
             <br><br>
             <button id="submit">Next Question</button>
               <?php } elseif (is_numeric($questions)) {
@@ -96,7 +98,7 @@ if (!$questionsObj->needToInsertData()) {
   <script>
       $("input[type='radio']").change(function(){
 
-          if($(this).val()=="other"){
+          if($(this).val()=="0"){
               $("#otherAnswer").show();
           }
           else{

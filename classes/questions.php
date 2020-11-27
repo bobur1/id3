@@ -186,7 +186,12 @@ class Questions
 
     public function saveAnsweredQuestion($currentAnswer){
         $visited_questions_answers = $this->getSession(self::POST_VISITED_QUESTIONS_ANSWERS);
+        if (isset($_POST['otherAnswer']) && !empty($_POST['otherAnswer'])) {
+            $new_answer = $this->newAnswer($_POST['otherAnswer'], $_POST['question_id']);
+            $currentAnswer[$_POST['question_id']] = $new_answer;
+            unset($_POST['otherAnswer']);
 
+        }
         var_dump('<br>$visited_questions_answers --> ');
         var_dump('<pre>');
         var_dump($visited_questions_answers);
@@ -298,6 +303,17 @@ class Questions
         unset($_SESSION['final_question']);
         unset($_POST['answer']);
         unset($_POST['question_id']);
+    }
+
+    public function newAnswer($new_answer, $question_id) {
+        $Dbobj = new DbConnection();
+        $conn = $Dbobj->getdbconnect();
+        $sql = "INSERT INTO answers (answer,questions_id) VALUES ('" . $new_answer."',".$question_id. ")";
+                var_dump($sql);
+//        var_dump($new_answer.''.$question_id);
+//        die();
+         mysqli_query($conn, $sql);
+        return mysqli_insert_id($conn);
     }
 
 }
