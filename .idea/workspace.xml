@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e41babf5-a270-43c1-bd2a-b0213d64b5a9" name="Default Changelist" comment="" />
+    <list default="true" id="e41babf5-a270-43c1-bd2a-b0213d64b5a9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/id3.sql" beforeDir="false" afterPath="$PROJECT_DIR$/id3.sql" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,6 +164,9 @@
       <find>finalAnswer</find>
     </findStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -318,6 +323,7 @@
     <option name="width" value="697" />
     <option name="height" value="728" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -469,16 +475,15 @@
       <option name="presentableId" value="Default" />
       <updated>1610778595921</updated>
       <workItem from="1610778597340" duration="35393000" />
-      <workItem from="1611251877696" duration="10371000" />
+      <workItem from="1611251877696" duration="10676000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45764000" />
+    <option name="totallyTimeSpent" value="46069000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49633253" visible="true" weight="0.21785174" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
