@@ -61,8 +61,7 @@ button:hover{
 }
 .quiz-container{
   position: absolute;
-  right: 0;
-  margin-right: 25%;
+  right: 50%;
 }
 
 .dup{
