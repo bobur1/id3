@@ -5,6 +5,22 @@
     <form method="get" action="{{route('newForm')}}">
         <button name="new" id="submit">start new</button>
     </form>
+    <form method="post" action="{{route('changeLanguage')}}">
+        <p>Languages</p>
+        @csrf
+        <select name="language">
+            @foreach($languages as $language)
+                <option
+                        @if((Session::has('language') ? Session::get('language') : 'en') == $language->iso_639)
+                        selected
+                        @endif
+                        value="{{$language->iso_639}}">
+                    {{$language->name}}
+                </option>
+            @endforeach
+        </select>
+        <button id="submit">Change</button>
+    </form>
     <div class="quiz-container">
         <div id="quiz">
             <form method="post" action="{{route('final')}}">

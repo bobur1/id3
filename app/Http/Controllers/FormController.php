@@ -26,12 +26,9 @@ class FormController extends Controller
     public function index()
     {
         $languages = Language::all();
-//        dd(GoogleTranslate::trans('Hello again', 'ca'));
-//        dd(Session::has('answers'));
-//        Session::forget('answers');
-//        Session::save();
-//        dd('done');
+//        $this->cleanSession();
 
+        var_dump(Session::has('answers') ? Session::get('answers') : []);
         if ($this->isMinAmountOfRecordsExists()) {
             // flag to get from id3 to normal questionary flow whenever encounter 'other' answer
             $backToNormalFlow = Session::has('backToNormalFlow') ? Session::get('backToNormalFlow') : false;
@@ -40,12 +37,16 @@ class FormController extends Controller
                 $question = $this->id3();
             } else {
                 $question = $this->backToNormalFlow();
+                //redirect type
+                if (is_object($question) && get_class($question) == 'Illuminate\Http\RedirectResponse') {
+                    return $question;
+                }
             }
 
             if (!$question) {
                 // questions are over
 //            dd('final question');
-                return view('pages.final_question');
+                return view('pages.final_question', compact('languages'));
             }
 
             // if there any chosen language -> translate question and answers
@@ -116,7 +117,12 @@ class FormController extends Controller
             // if we have only one record -> need to ask final question
             if (count($visitedRecordsIds) === 1) {
                 Session::put('final_question', $this->finalQuestion());
-                Session::put('expected_final_answer', $this->expectedFinalAnswer($visitedRecordsIds[0]));
+
+                try {
+                    Session::put('expected_final_answer', $this->expectedFinalAnswer($visitedRecordsIds[0]));
+                } catch (\Exception $e) {
+                    var_dump('no expected answer');
+                }
 
                 return 0;
             }
@@ -185,7 +191,12 @@ class FormController extends Controller
         if (!$highestGain) {
             Session::put('final_question', $this->finalQuestion());
             //take first visited record, all of them have similar final result (either yes = 1 or no = 0)
-            Session::put('expected_final_answer', $this->expectedFinalAnswer($visitedRecordsIds[0]));
+
+            try {
+                Session::put('expected_final_answer', $this->expectedFinalAnswer($visitedRecordsIds[0]));
+            } catch (\Exception $e) {
+                var_dump('no expected answer');
+            }
 
             return 0;
         }
@@ -276,15 +287,17 @@ class FormController extends Controller
 
     public function finalQuestionSubmitted(Request $request)
     {
-        if ($request->answer == Session::get('expected_final_answer')) {
+        if (Session::has('expected_final_answer') && $request->answer == Session::get('expected_final_answer')) {
             //dd('as expected');
             $this->cleanSession();
             return redirect()->route('thank');
         } else {
             //dd('not expected');
-            $this->saveNewRecord($request->answer);
-            return redirect()->route('thank')
-                ->with('success', sprintf('New data have been saved!'));
+            //ask rest questions if there unexpected answer accured
+            Session::put('final_answer', $request->answer);
+            Session::put('backToNormalFlow', true);
+
+            return redirect()->route('form');
         }
     }
 
@@ -300,7 +313,7 @@ class FormController extends Controller
 
     public function cleanSession()
     {
-        Session::forget('answers');
+        Session::flush();
         Session::save();
     }
 
@@ -322,6 +335,15 @@ class FormController extends Controller
 
         // if no question left -> time to ask final question
         if (!isset($question->id)) {
+            // if we have already asked final question
+            if (Session::has('final_question')) {
+
+                $this->saveNewRecord(Session::get('final_answer'));
+
+                return redirect()->route('thank')
+                    ->with('success', sprintf('New data have been saved!'));
+            }
+
             Session::put('final_question', $this->finalQuestion());
 
             return 0;
